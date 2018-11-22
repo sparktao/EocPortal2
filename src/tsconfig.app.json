@@ -1,8 +1,22 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "outDir": "../out-tsc/app",
-    "types": []
+    "sourceMap": true,
+    "declaration": false,
+    "module": "es2015",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "typeRoots": [
+      "../node_modules/@types"
+    ],
+    "types": [],
+    "paths":{
+      "@shared/*": [ "./shared/*" ]
+    }
   },
   "exclude": [
     "test.ts",
