@@ -1,6 +1,6 @@
 import { Injectable, Inject, Optional, OnDestroy } from '@angular/core';
 import { Http, Headers, ResponseContentType, Response } from '@angular/http';
-import { API_BASE_URL } from '../common.service';
+import { BaseService } from '../base.service';
 import { Observable, of } from 'rxjs';
 import {flatMap, catchError} from 'rxjs/operators';
 
@@ -26,10 +26,12 @@ export class MenuItem {
 
   init(data?: any) {
     if (data) {
-      this.id = data["id"];
-      this.name = data["name"];
-      this.icon = data["icon"];
-      this.route = data["route"];
+      if(data["location"] != undefined || data["location"] != null) {
+        this.id = data["id"];
+        this.name = data["fullName"];
+        this.icon = data["icon"];
+        this.route = data["location"];
+      }
     }
   }
 
@@ -42,19 +44,14 @@ export class MenuItem {
 }
 
 @Injectable()
-export class MenuService implements OnDestroy {
+export class MenuService extends BaseService implements OnDestroy {
     private http: Http;
-    private baseUrl: string;
     protected jsonParseReviver: (key: string, value: any) => any = undefined;
     private data: MenuItem[] = [];
 
-    constructor(@Inject(Http) http: Http,
-      @Optional() @Inject(API_BASE_URL) baseUrl?: string
-    ) {
+    constructor(@Inject(Http) http: Http) {
+      super();
       this.http = http;
-      this.baseUrl = baseUrl;
-      if(this.baseUrl == undefined )
-      this.baseUrl = "http://localhost:58351";
     }
 
     set menus(items: MenuItem[]) {
@@ -66,7 +63,7 @@ export class MenuService implements OnDestroy {
     }
 
     getAll(): Observable<MenuItem[]> {
-      let url_ = this.baseUrl + '/api/basemodule?';
+      let url_ = this.appUrlBase + '/basemodule?';
 
       let options_ : any = {
           method: "get",

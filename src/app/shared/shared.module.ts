@@ -125,7 +125,10 @@ const THIRDMODULES = [
 // endregion
 
 import { DelonComponentModule } from './components';
-import { NotifyService } from './notify/notify.service';
+import { NotifyService } from './notify/notify.service';;
+import { SigninOidcComponent } from './oidc/signin-oidc/signin-oidc.component'
+;
+import { RedirectSilentRenewComponent } from './oidc/redirect-silent-renew/redirect-silent-renew.component'
 
 // import { MomentDatePipe } from './pipes/moment-date.pipe';
 // import { YNPipe } from './pipes/yn.pipe';
@@ -155,8 +158,9 @@ const HELPERS = [
         ...THIRDMODULES
     ],
     declarations: [
-        ...PIPES
-    ],
+        ...PIPES,
+        SigninOidcComponent,
+        RedirectSilentRenewComponent    ],
     providers: [
         // ModalHelper
     ],

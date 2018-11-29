@@ -1,15 +1,16 @@
 <div class="wrapper">
-    <div class="router-progress-bar" *ngIf="isFetching"></div>
-    <app-header class="header"></app-header>
-    <div class="aside">
-        <aside id="leftsidebar" class="aside-inner">
-            <!-- <sidebar-user-area></sidebar-user-area> -->
-            <sidebar-nav></sidebar-nav>
-            <!-- <sidebar-footer></sidebar-footer> -->
-        </aside>
-    </div>
-    <section class="content">
-        <!-- <reuse-tab></reuse-tab> -->
-        <router-outlet></router-outlet>
-    </section>
+  <div class="router-progress-bar" *ngIf="isFetching"></div>
+  <app-header class="header"></app-header>
+  <div class="aside">
+      <aside id="leftsidebar" class="aside-inner">
+          <!-- <sidebar-user-area></sidebar-user-area> -->
+          <sidebar-nav></sidebar-nav>
+          <!-- <sidebar-footer></sidebar-footer> -->
+      </aside>
   </div>
+  <section class="content">
+      <!-- <reuse-tab></reuse-tab> -->
+      <router-outlet></router-outlet>
+  </section>
+</div>
+

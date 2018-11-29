@@ -15,7 +15,7 @@
     ],
     "types": [],
     "paths":{
-      "@shared/*": [ "./shared/*" ]
+      "@shared/*": [ "./app/shared/*" ]
     }
   },
   "exclude": [

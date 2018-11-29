@@ -11,28 +11,28 @@ import { registerLocaleData } from '@angular/common';
 // import zh from '@angular/common/locales/zh';
 import localeZhHans from '@angular/common/locales/zh-Hans';
 import localeZhHansExtra from '@angular/common/locales/extra/zh-Hans';
-
-import { DelonComponentModule } from '../shared/components';
-
+import { DelonComponentModule } from '@shared/components';
 import { LayoutModule } from './layout/layout.module';
 import { VoterComponent } from './voter.component';
 import { VoteTakerComponent } from './votetaker.component';
 import { SharedModule } from '@shared/shared.module';
-import { AppConsts } from '@shared/AppConsts';
-import { API_BASE_URL } from '@shared/service-proxies/common.service';
 import { AppPreBootstrap } from './AppPreBootstrap';
 import { RouterModule, Routes } from '@angular/router';
+import { SigninOidcComponent } from '@shared/oidc/signin-oidc/signin-oidc.component';
+import { RedirectSilentRenewComponent } from '@shared/oidc/redirect-silent-renew/redirect-silent-renew.component';
 
-export const ROUTES: Routes = [];
+export const ROUTES: Routes = [
+  { path: 'employee', loadChildren: './page/employee/employee.module#EmployeeModule' },
+  { path: 'signin-oidc', component: SigninOidcComponent },
+  { path: 'redirect-silentrenew', component: RedirectSilentRenewComponent },
+  { path: '**', redirectTo: 'employee' }
+];
 
 function fixedLocale(){
 	localeZhHans[0] = 'zh-CN';
 	registerLocaleData(localeZhHans, localeZhHansExtra);
 }
 
-export function getRemoteServiceBaseUrl(): string {
-	return AppConsts.remoteServiceBaseUrl;
-}
 
 export function appInitializerFactory(injector: Injector) {
 	return () => {
@@ -79,7 +79,6 @@ export function appInitializerFactory(injector: Injector) {
   ],
   providers: [
     { provide: NZ_I18N, useValue: zh_CN },
-    { provide: API_BASE_URL, useFactory: getRemoteServiceBaseUrl },
     {
 			provide: APP_INITIALIZER,
 			useFactory: appInitializerFactory,

@@ -3,7 +3,7 @@ import { Http, Headers, Response } from '@angular/http';
 import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
 import {flatMap, catchError} from 'rxjs/operators';
-import { API_BASE_URL } from '../common.service';
+import { BaseService } from '../base.service';
 
 
 export interface IBaseUser {
@@ -94,19 +94,18 @@ export class BaseUser implements IBaseUser {
 }
 
 @Injectable()
-export class BaseUserService {
+export class BaseUserService extends BaseService{
 
   private http: Http;
-    private baseUrl: string;
     protected jsonParseReviver: (key: string, value: any) => any = undefined;
 
-    constructor(@Inject(Http) http: Http, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl ? baseUrl : "";
+    constructor(@Inject(Http) http: Http) {
+      super();
+      this.http = http;
     }
 
     get(id:string): Observable<BaseUser> {
-        let url_ = this.baseUrl + '/api/User/Get?';
+        let url_ = this.appUrlBase + '/api/User/Get?';
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined and cannot be null.");
         else

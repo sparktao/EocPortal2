@@ -1,8 +1,9 @@
-﻿import * as moment from 'moment';
-import { AppConsts } from '@shared/AppConsts';
+﻿
+
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { Injector, Type, CompilerOptions, NgModuleRef } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { environment } from 'environments/environment';
 
 
 export class AppPreBootstrap {
@@ -28,8 +29,7 @@ export class AppPreBootstrap {
         httpClient.get<any>('/assets/appconfig.json', {
             // headers: requestHeaders
         }).subscribe(result=>{
-            AppConsts.appBaseUrl = result.appBaseUrl;
-            AppConsts.remoteServiceBaseUrl = result.remoteServiceBaseUrl;
+
 
             callback();
         });
@@ -61,7 +61,7 @@ export class AppPreBootstrap {
         //     requestHeaders['.AspNetCore.Culture'] = Abp.utils.getCookieValue("Abp.Localization.CultureName");
         // }
 
-        httpClient.get<any>(AppConsts.remoteServiceBaseUrl + '/UserConfiguration/GetAll', {
+        httpClient.get<any>(environment.apiUrlBase + '/UserConfiguration/GetAll', {
             // headers: requestHeaders
         }).subscribe(res=>{
             let result = res.result;
