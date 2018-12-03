@@ -137,7 +137,7 @@ const PIPES = [
   // YNPipe
 ];
 
-// import { ModalHelper } from './helpers/modal.helper';
+import { ModalHelper } from './helpers/modal.helper';
 // import { MenuService } from './service-proxies/service/menu.service';
 // import { ColorsService } from './layout/colors.service'
 const HELPERS = [
@@ -162,7 +162,7 @@ const HELPERS = [
         SigninOidcComponent,
         RedirectSilentRenewComponent    ],
     providers: [
-        // ModalHelper
+        ModalHelper
     ],
     exports: [
         CommonModule,

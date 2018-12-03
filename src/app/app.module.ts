@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgZorroAntdModule, NZ_I18N, zh_CN } from 'ng-zorro-antd';
 import { registerLocaleData } from '@angular/common';
-// import zh from '@angular/common/locales/zh';
+import zh from '@angular/common/locales/zh';
 import localeZhHans from '@angular/common/locales/zh-Hans';
 import localeZhHansExtra from '@angular/common/locales/extra/zh-Hans';
 import { DelonComponentModule } from '@shared/components';
@@ -28,6 +28,8 @@ export const ROUTES: Routes = [
   { path: '**', redirectTo: 'employee' }
 ];
 
+registerLocaleData(zh);
+
 function fixedLocale(){
 	localeZhHans[0] = 'zh-CN';
 	registerLocaleData(localeZhHans, localeZhHansExtra);
@@ -37,7 +39,7 @@ function fixedLocale(){
 export function appInitializerFactory(injector: Injector) {
 	return () => {
 
-		fixedLocale();
+		//fixedLocale();
 
 		return new Promise<boolean>((resolve, reject) => {
 			AppPreBootstrap.run(injector, () => {
@@ -71,6 +73,7 @@ export function appInitializerFactory(injector: Injector) {
     HttpModule,
     FormsModule,
     HttpClientModule,
+    /** 导入 ng-zorro-antd 模块 **/
     NgZorroAntdModule,
     DelonComponentModule.forRoot(),
     RouterModule.forRoot(ROUTES),
@@ -78,6 +81,7 @@ export function appInitializerFactory(injector: Injector) {
     SharedModule
   ],
   providers: [
+    /** 配置 ng-zorro-antd 国际化 **/
     { provide: NZ_I18N, useValue: zh_CN },
     {
 			provide: APP_INITIALIZER,
