@@ -22,8 +22,18 @@ export class SidebarNavComponent extends AppComponentBase implements OnInit {
   }
 
   ngOnInit() {
-    this.menuService.getAll().subscribe((result:MenuItem[]) => {
-      this.menuItems = result;
+    this.menuService.getAll().subscribe(
+      resp => {
+        const status = resp.status;
+        let result200 :any = null;
+        if (status === 200) {
+            try{
+              result200 = MenuItem.fromJS(resp.body);
+            } catch(ex){
+              result200 = new MenuItem();
+            }
+        }
+        this.menuItems = result200.items;
     });
   }
 

@@ -1,10 +1,9 @@
 import { Injectable, Inject } from '@angular/core';
 import { BaseService } from '../base.service';
 import * as moment from 'moment';
-import { Http, Headers, Response } from '@angular/http';
 import { Observable, of } from 'rxjs';
 import { flatMap, catchError } from 'rxjs/operators';
-
+import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 export class OrgEmployee{
   // 联系人编号
@@ -173,15 +172,13 @@ export class PagedResultDtoOfOrgEmployee  {
   providedIn: 'root'
 })
 export class OrgEmployeeService extends BaseService {
-  protected http:Http;
   protected jsonParseReviver: (key: string, value: any) => any = undefined;
 
-  constructor(@Inject(Http) http: Http) {
+  constructor(@Inject(HttpClient) private httpClient: HttpClient) {
     super();
-    this.http = http;
   }
 
-  getAll(skipCount: number, maxResultCount: number): Observable<PagedResultDtoOfOrgEmployee> {
+  getAll(skipCount: number, maxResultCount: number) {
     let url_ = this.appUrlBase + "/employee?";
     if (skipCount === undefined || skipCount === null)
         throw new Error("The parameter 'skipCount' must be defined and cannot be null.");
@@ -193,52 +190,13 @@ export class OrgEmployeeService extends BaseService {
         url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
     url_ = url_.replace(/[?&]$/, "");
 
-    let options_ : any = {
-        method: "get",
-        headers: new Headers({
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        })
-    };
-
-    return this.http.request(url_, options_).pipe(
-      flatMap((response_ : any) => {
-        return this.processGetAll(response_);
+    return this.httpClient.get(url_, {
+      headers: new HttpHeaders({
+          "Content-Type": "application/json",
+          "Accept": "application/json"
       }),
-      catchError((response_: any) => {
-        if (response_ instanceof Response) {
-            try {
-                return this.processGetAll(<any>response_);
-            } catch (e) {
-                return <Observable<PagedResultDtoOfOrgEmployee>><any>Observable.throw(e);
-            }
-        } else
-            return <Observable<PagedResultDtoOfOrgEmployee>><any>Observable.throw(response_);
-    }));
-}
-
-protected processGetAll(response: Response): Observable<PagedResultDtoOfOrgEmployee> {
-    const status = response.status;
-
-    let _headers: any = response.headers ? response.headers.toJSON() : {};
-    if (status === 200) {
-        const _responseText = response.text();
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = resultData200 ? PagedResultDtoOfOrgEmployee.fromJS(resultData200) : new PagedResultDtoOfOrgEmployee();
-        return of(result200);
-    } else if (status === 401) {
-        const _responseText = response.text();
-        return this.throwException("A server error occurred.", status, _responseText, _headers);
-    } else if (status === 403) {
-        const _responseText = response.text();
-        return this.throwException("A server error occurred.", status, _responseText, _headers);
-    } else if (status !== 200 && status !== 204) {
-        const _responseText = response.text();
-        return this.throwException("An unexpected server error occurred.", status, _responseText, _headers);
-    }
-    return of<PagedResultDtoOfOrgEmployee>(<any>null);
-}
-
+      observe: 'response'
+    });
+  }
 
 }

@@ -126,9 +126,6 @@ const THIRDMODULES = [
 
 import { DelonComponentModule } from './components';
 import { NotifyService } from './notify/notify.service';;
-import { SigninOidcComponent } from './oidc/signin-oidc/signin-oidc.component'
-;
-import { RedirectSilentRenewComponent } from './oidc/redirect-silent-renew/redirect-silent-renew.component'
 
 // import { MomentDatePipe } from './pipes/moment-date.pipe';
 // import { YNPipe } from './pipes/yn.pipe';
@@ -138,6 +135,8 @@ const PIPES = [
 ];
 
 import { ModalHelper } from './helpers/modal.helper';
+import { ServiceProxiesModule } from './service-proxies/service-proxies.module';
+
 // import { MenuService } from './service-proxies/service/menu.service';
 // import { ColorsService } from './layout/colors.service'
 const HELPERS = [
@@ -155,12 +154,12 @@ const HELPERS = [
         NgZorroAntdModule,
         ...ZORROMODULES,
         DelonComponentModule,
-        ...THIRDMODULES
+        ...THIRDMODULES,
+        ServiceProxiesModule
     ],
     declarations: [
-        ...PIPES,
-        SigninOidcComponent,
-        RedirectSilentRenewComponent    ],
+        ...PIPES
+      ],
     providers: [
         ModalHelper
     ],
@@ -173,7 +172,8 @@ const HELPERS = [
         ...ZORROMODULES,
         DelonComponentModule,
         ...PIPES,
-        ...THIRDMODULES
+        ...THIRDMODULES,
+        ServiceProxiesModule
     ]
 })
 export class SharedModule {
@@ -185,7 +185,10 @@ export class SharedModule {
                 NzMessageService,
 
                 AppSessionService,
-                NotifyService
+                NotifyService,
+
+
+
                 // AppUrlService,
                 // AppAuthService,
                 // AppRouteGuard,

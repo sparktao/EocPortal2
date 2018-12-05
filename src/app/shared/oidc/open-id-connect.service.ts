@@ -8,8 +8,8 @@ import { ReplaySubject } from 'rxjs';
 })
 export class OpenIdConnectService {
 
-  private userManager: UserManager = new UserManager(environment.openIdConnectSettings);
-  private currentUser : User;
+  userManager: UserManager = new UserManager(environment.openIdConnectSettings);
+  currentUser : User;
 
   userLoaded$ = new ReplaySubject<boolean>(1);
 
@@ -24,6 +24,18 @@ export class OpenIdConnectService {
 
   constructor() {
     this.userManager.clearStaleState();
+    this.userManager.getUser().then(user=>{
+      if(user) {
+        this.userLoaded$.next(true);
+        this.currentUser = user;
+      }
+      else {
+        this.userLoaded$.next(false);
+      }
+    }).catch(error =>{
+      this.userLoaded$.next(false);
+    });
+
     this.userManager.events.addUserLoaded(user => {
       if (!environment.production) {
         console.log('User loaded.', user);
@@ -46,6 +58,8 @@ export class OpenIdConnectService {
       if(!environment.production) {
         console.log('Redirection to signin triggered.');
       }
+    }).catch(error=>{
+      console.log(error);
     });
   }
 
@@ -54,6 +68,8 @@ export class OpenIdConnectService {
       if (!environment.production) {
         console.log('Callback after signin handled.', user);
       }
+    }).catch(error=>{
+      console.log(error);
     });
   }
 

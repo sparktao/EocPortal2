@@ -5,13 +5,25 @@ import { EmployeeRoutingModule } from './employee-routing.module';
 import { EmployeeComponent } from './employee.component';
 import { EmpListComponent } from './emp-list/emp-list.component';
 import { SharedModule } from '@shared/shared.module';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthorizationHeaderInterceptor } from '@shared/oidc/authorization-header-interceptor.interceptor';
+
 
 @NgModule({
   imports: [
     CommonModule,
     EmployeeRoutingModule,
-    SharedModule
+    SharedModule,
+    HttpClientModule
   ],
-  declarations: [EmployeeComponent, EmpListComponent]
+  declarations: [EmployeeComponent, EmpListComponent],
+  providers:[
+        {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthorizationHeaderInterceptor,
+      multi: true
+    }
+  ]
+
 })
 export class EmployeeModule { }

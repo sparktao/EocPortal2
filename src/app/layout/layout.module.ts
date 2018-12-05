@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '@shared/shared.module';
 import { HeaderComponent } from './header/header.component';
-import { ServiceProxiesModule } from '@shared/service-proxies/service-proxies.module';
 import { SidebarNavComponent } from './sidebar/sidebar-nav/sidebar-nav.component';
 
 import { HeaderSearchComponent } from './header/components/search.component';
@@ -41,8 +40,7 @@ const HEADERCOMPONENTS = [
   imports: [
     CommonModule,
     SharedModule,
-    RouterModule,
-    ServiceProxiesModule
+    RouterModule
   ],
   declarations: [
     HeaderComponent,
@@ -52,6 +50,6 @@ const HEADERCOMPONENTS = [
   exports:[
     ...COMPONENTS
   ],
-  providers:[ ServiceProxiesModule, NotifyService]
+  providers:[ NotifyService]
 })
 export class LayoutModule { }

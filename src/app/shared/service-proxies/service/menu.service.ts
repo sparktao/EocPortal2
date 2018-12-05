@@ -1,8 +1,6 @@
 import { Injectable, Inject, Optional, OnDestroy } from '@angular/core';
-import { Http, Headers, ResponseContentType, Response } from '@angular/http';
 import { BaseService } from '../base.service';
-import { Observable, of } from 'rxjs';
-import {flatMap, catchError} from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
 export class MenuItem {
@@ -45,13 +43,11 @@ export class MenuItem {
 
 @Injectable()
 export class MenuService extends BaseService implements OnDestroy {
-    private http: Http;
     protected jsonParseReviver: (key: string, value: any) => any = undefined;
     private data: MenuItem[] = [];
 
-    constructor(@Inject(Http) http: Http) {
+    constructor(@Inject(HttpClient) private httpClient: HttpClient) {
       super();
-      this.http = http;
     }
 
     set menus(items: MenuItem[]) {
@@ -62,54 +58,17 @@ export class MenuService extends BaseService implements OnDestroy {
         return this.data;
     }
 
-    getAll(): Observable<MenuItem[]> {
+    getAll() {
       let url_ = this.appUrlBase + '/basemodule?';
 
-      let options_ : any = {
-          method: "get",
-          headers: new Headers({
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-          })
-      };
-
-      return this.http.request(url_, options_).pipe(
-        flatMap((response_ : any) => {
-          return this.processGetAll(response_);
+      return this.httpClient.get(url_, {
+        headers: new HttpHeaders({
+            "Content-Type": "application/json",
+            "Accept": "application/json"
         }),
-        catchError((response_: any) => {
-          if (response_ instanceof Response) {
-              try {
-                  return this.processGetAll(<any>response_);
-              } catch (e) {
-                  return <Observable<MenuItem>><any>Observable.throw(e);
-              }
-          } else
-              return <Observable<MenuItem>><any>Observable.throw(response_);
-        })
-      );
+        observe: 'response'
+      });
   }
-
-  protected processGetAll(response: Response): Observable<MenuItem[]> {
-    const status = response.status;
-
-    let _headers: any = response.headers ? response.headers.toJSON() : {};
-    if (status === 200) {
-        const _responseText = response.text();
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (resultData200 && resultData200.constructor === Array) {
-            result200 = [];
-            for (let item of resultData200)
-                result200.push(MenuItem.fromJS(item));
-        }
-        return of(result200);
-    } else if (status !== 200 && status !== 204) {
-        const _responseText = response.text();
-        //return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-    }
-    return of<MenuItem[]>(<any>null);
-}
 
     /**
      * 清空菜单

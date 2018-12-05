@@ -1,9 +1,7 @@
 import { Injectable, Inject, Optional } from '@angular/core';
-import { Http, Headers, Response } from '@angular/http';
 import * as moment from 'moment';
-import { Observable, of } from 'rxjs';
-import {flatMap, catchError} from 'rxjs/operators';
 import { BaseService } from '../base.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
 export interface IBaseUser {
@@ -96,16 +94,14 @@ export class BaseUser implements IBaseUser {
 @Injectable()
 export class BaseUserService extends BaseService{
 
-  private http: Http;
     protected jsonParseReviver: (key: string, value: any) => any = undefined;
 
-    constructor(@Inject(Http) http: Http) {
+    constructor(@Inject(HttpClient) private httpClient: HttpClient) {
       super();
-      this.http = http;
     }
 
-    get(id:string): Observable<BaseUser> {
-        let url_ = this.appUrlBase + '/api/User/Get?';
+    get(id:string) {
+        let url_ = this.appUrlBase + '/User/Get?';
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined and cannot be null.");
         else
@@ -120,43 +116,12 @@ export class BaseUserService extends BaseService{
           })
       };
 
-      return this.http.request(url_, options_).pipe(
-        flatMap((response_ : any) => {
-          return this.processGet(response_);
+      return this.httpClient.get(url_, {
+        headers: new HttpHeaders({
+            "Content-Type": "application/json",
+            "Accept": "application/json"
         }),
-        catchError((response_: any) => {
-          if (response_ instanceof Response) {
-              try {
-                  return this.processGet(<any>response_);
-              } catch (e) {
-                  return <Observable<BaseUser>><any>Observable.throw(e);
-              }
-          } else
-              return <Observable<BaseUser>><any>Observable.throw(response_);
-        })
-      );
+        observe: 'response'
+      });
     }
-
-    protected processGet(response: Response): Observable<BaseUser> {
-      const status = response.status;
-
-      let _headers: any = response.headers ? response.headers.toJSON() : {};
-      if (status === 200) {
-          const _responseText = response.text();
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = resultData200 ? BaseUser.fromJS(resultData200) : new BaseUser();
-          return of(result200);
-      } else if (status === 401) {
-          const _responseText = response.text();
-          return this.throwException("A server error occurred.", status, _responseText, _headers);
-      } else if (status === 403) {
-          const _responseText = response.text();
-          return this.throwException("A server error occurred.", status, _responseText, _headers);
-      } else if (status !== 200 && status !== 204) {
-          const _responseText = response.text();
-          return this.throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      }
-      return of<BaseUser>(<any>null);
-  }
 }

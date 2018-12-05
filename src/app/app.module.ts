@@ -1,11 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injector, APP_INITIALIZER } from '@angular/core';
-import {HttpModule} from '@angular/http';
-
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgZorroAntdModule, NZ_I18N, zh_CN } from 'ng-zorro-antd';
 import { registerLocaleData } from '@angular/common';
 import zh from '@angular/common/locales/zh';
@@ -13,16 +11,18 @@ import localeZhHans from '@angular/common/locales/zh-Hans';
 import localeZhHansExtra from '@angular/common/locales/extra/zh-Hans';
 import { DelonComponentModule } from '@shared/components';
 import { LayoutModule } from './layout/layout.module';
-import { VoterComponent } from './voter.component';
-import { VoteTakerComponent } from './votetaker.component';
 import { SharedModule } from '@shared/shared.module';
 import { AppPreBootstrap } from './AppPreBootstrap';
 import { RouterModule, Routes } from '@angular/router';
 import { SigninOidcComponent } from '@shared/oidc/signin-oidc/signin-oidc.component';
 import { RedirectSilentRenewComponent } from '@shared/oidc/redirect-silent-renew/redirect-silent-renew.component';
+import { AuthorizationHeaderInterceptor } from '@shared/oidc/authorization-header-interceptor.interceptor';
+import { OpenIdConnectService } from '@shared/oidc/open-id-connect.service';
+import { RequireAuthenticatedUserRouteGuard } from '@shared/oidc/require-authenticated-user-route.guard';
 
 export const ROUTES: Routes = [
   { path: 'employee', loadChildren: './page/employee/employee.module#EmployeeModule' },
+  ///oidc routers
   { path: 'signin-oidc', component: SigninOidcComponent },
   { path: 'redirect-silentrenew', component: RedirectSilentRenewComponent },
   { path: '**', redirectTo: 'employee' }
@@ -65,12 +65,13 @@ export function appInitializerFactory(injector: Injector) {
 
 @NgModule({
   declarations: [
-    AppComponent, VoterComponent, VoteTakerComponent
+    AppComponent,
+    SigninOidcComponent,
+    RedirectSilentRenewComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    HttpModule,
     FormsModule,
     HttpClientModule,
     /** 导入 ng-zorro-antd 模块 **/
@@ -79,16 +80,24 @@ export function appInitializerFactory(injector: Injector) {
     RouterModule.forRoot(ROUTES),
     LayoutModule,
     SharedModule
+
   ],
   providers: [
+    OpenIdConnectService,
+    RequireAuthenticatedUserRouteGuard,
     /** 配置 ng-zorro-antd 国际化 **/
     { provide: NZ_I18N, useValue: zh_CN },
-    {
-			provide: APP_INITIALIZER,
-			useFactory: appInitializerFactory,
-			deps: [Injector],
-			multi: true
-		}
+    // {
+		// 	provide: APP_INITIALIZER,
+		// 	useFactory: appInitializerFactory,
+		// 	deps: [Injector],
+		// 	multi: true
+    // },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: AuthorizationHeaderInterceptor,
+    //   multi: true
+    // }
   ],
   bootstrap: [AppComponent]
 })

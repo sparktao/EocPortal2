@@ -29,10 +29,23 @@ export class EmpListComponent extends PagedListingComponentBase<OrgEmployee> {
             finishedCallback();
             this.loading = false;
           }))
-        .subscribe((result: PagedResultDtoOfOrgEmployee) => {
-          this.dataItems = result.items;
-          this.showPaging(result, pageNumber);
-        });
+        .subscribe(
+          resp=>{
+            const status = resp.status;
+            if (status === 200) {
+                let result200 :any = null;
+                try{
+                  result200 = PagedResultDtoOfOrgEmployee.fromJS(resp.body);
+                } catch(ex){
+                  result200 = new PagedResultDtoOfOrgEmployee();
+                }
+                this.dataItems = result200.items;
+                this.showPaging(result200, pageNumber);
+            }
+          },
+          err=>{
+            console.log(err.message);
+      });
     }
 
     delete(entity: OrgEmployee): void {

@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpHandler, HttpEvent, HttpRequest } from '@angular/common/http';
 import { OpenIdConnectService } from './open-id-connect.service';
 import { Observable } from 'rxjs';
-
+  // we declare that this service should be created
+  // by the root application injector.
 @Injectable()
 export class AuthorizationHeaderInterceptor implements HttpInterceptor {
 
