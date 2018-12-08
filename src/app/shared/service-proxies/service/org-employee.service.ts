@@ -1,9 +1,23 @@
 import { Injectable, Inject } from '@angular/core';
 import { BaseService } from '../base.service';
 import * as moment from 'moment';
-import { Observable, of } from 'rxjs';
-import { flatMap, catchError } from 'rxjs/operators';
-import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { PaginationParameters } from '@shared/component-base/paged-listing-component-base';
+
+export class CreateOrgEmployeeDTO {
+   /// 联系人姓名
+   employee_Name:string;
+   /// 性别
+  gender:string;
+  /// 出生日期
+  birthday:moment.Moment;
+  /// 联系电话
+  contact_Phone:string;
+  /// 电子邮件
+  email:string;
+  /// 有效标志
+  isvalid:boolean;
+}
 
 export class OrgEmployee{
   // 联系人编号
@@ -123,6 +137,7 @@ export class OrgEmployee{
   }
 }
 
+
 export class PagedResultDtoOfOrgEmployee  {
   totalCount: number;
   items: OrgEmployee[];
@@ -133,9 +148,9 @@ export class PagedResultDtoOfOrgEmployee  {
   init(data?: any) {
       if (data) {
           this.totalCount = data["totalCount"];
-          if (data["items"] && data["items"].constructor === Array) {
+          if (data && data.constructor === Array) {
               this.items = [];
-              for (let item of data["items"])
+              for (let item of data)
                   this.items.push(OrgEmployee.fromJS(item));
           }
       }
@@ -178,25 +193,37 @@ export class OrgEmployeeService extends BaseService {
     super();
   }
 
-  getAll(skipCount: number, maxResultCount: number) {
+  /**
+   * 查询
+   * @param skipCount
+   * @param maxResultCount
+   */
+  getAll(paginationParameter?:any | PaginationParameters) {
     let url_ = this.appUrlBase + "/employee?";
-    if (skipCount === undefined || skipCount === null)
-        throw new Error("The parameter 'skipCount' must be defined and cannot be null.");
-    else
-        url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
-    if (maxResultCount === undefined || maxResultCount === null)
-        throw new Error("The parameter 'maxResultCount' must be defined and cannot be null.");
-    else
-        url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
-    url_ = url_.replace(/[?&]$/, "");
 
     return this.httpClient.get(url_, {
       headers: new HttpHeaders({
           "Content-Type": "application/json",
           "Accept": "application/json"
       }),
-      observe: 'response'
+      observe: 'response',
+      params: paginationParameter
     });
+  }
+
+  /**
+     * @input (optional)
+     * @return Success
+     */
+    create(employee: CreateOrgEmployeeDTO) {
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        })
+      };
+
+      return this.httpClient.post(`${this.appUrlBase}/employee`, employee, httpOptions);
   }
 
 }

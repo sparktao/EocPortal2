@@ -7,6 +7,8 @@ import { EmpListComponent } from './emp-list/emp-list.component';
 import { SharedModule } from '@shared/shared.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthorizationHeaderInterceptor } from '@shared/oidc/authorization-header-interceptor.interceptor';
+import { CreateEmpComponent } from './create-emp/create-emp.component';
+import { EditEmpComponent } from './edit-emp/edit-emp.component';
 
 
 @NgModule({
@@ -16,7 +18,15 @@ import { AuthorizationHeaderInterceptor } from '@shared/oidc/authorization-heade
     SharedModule,
     HttpClientModule
   ],
-  declarations: [EmployeeComponent, EmpListComponent],
+  declarations: [
+    EmployeeComponent,
+    EmpListComponent,
+    CreateEmpComponent,
+    EditEmpComponent
+  ],
+  entryComponents: [
+    CreateEmpComponent
+  ],
   providers:[
         {
       provide: HTTP_INTERCEPTORS,

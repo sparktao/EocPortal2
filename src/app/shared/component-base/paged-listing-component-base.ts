@@ -1,24 +1,51 @@
 ﻿import { AppComponentBase } from "./app-component-base";
 import { Injector, OnInit } from '@angular/core';
 
-export class PagedResultDto {
-    items: any[];
-    totalCount: number;
-}
 
 export class EntityDto {
     id: number;
 }
 
-export class PagedRequestDto {
-    skipCount: number;
-    maxResultCount: number;
+export class PaginationParameters {
+  //查询条件json
+  conditionJson?:string;
+  //page index
+  pageIndex?: number;
+  //page size
+  pageSize?: number;
+  // fields?: string;
+  //created_date
+  sidx?: string;
+  //desc
+  sord?: string;
+
+  constructor(init?: Partial<PaginationParameters>) {
+      Object.assign(this, init);
+  }
+}
+
+export class PageMeta {
+  totalItemsCount: number;
+  pageSize: number;
+  pageIndex: number;
+  pageCount: number;
+  // previousPageLink: string;
+  // nextPageLink: string;
+
+  init(data?: any) {
+    if (data) {
+        this.totalItemsCount = data["totalItemsCount"];
+        this.pageSize = data["pageSize"];
+        this.pageIndex = data["pageIndex"];
+        this.pageCount = data["pageCount"];
+    }
+  }
 }
 
 export abstract class PagedListingComponentBase<EntityDto> extends AppComponentBase implements OnInit {
 
     public pageSize: number = 10;
-    public pageNumber: number = 1;
+    public pageIndex: number = 1;
     public totalPages: number = 1;
     public totalItems: number;
     public isTableLoading = false;
@@ -32,27 +59,21 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
     }
 
     refresh(): void {
-        this.getDataPage(this.pageNumber);
+        this.getDataPage();
     }
 
-    public showPaging(result: PagedResultDto, pageNumber: number): void {
-        this.totalPages = ((result.totalCount - (result.totalCount % this.pageSize)) / this.pageSize) + 1;
-
-        this.totalItems = result.totalCount;
-        this.pageNumber = pageNumber;
+    public showPaging(pTotalPage:number, pTotalItems: number): void {
+        this.totalPages = pTotalPage;
+        this.totalItems = pTotalItems;
     }
 
-    public getDataPage(page: number): void {
-        var req = new PagedRequestDto();
-        req.maxResultCount = this.pageSize;
-        req.skipCount = (page - 1) * this.pageSize;
-
+    public getDataPage(): void {
         this.isTableLoading = true;
-        this.list(req, page, () => {
+        this.list(() => {
             this.isTableLoading = false;
         });
     }
 
-    protected abstract list(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void;
+    protected abstract list(finishedCallback: Function): void;
     protected abstract delete(entity: EntityDto): void;
 }

@@ -11,4 +11,8 @@ export abstract class AppComponentBase {
     this.notify = injector.get(NotifyService);
 
   }
+
+  l(key: string): string {
+    return key;
+  }
 }

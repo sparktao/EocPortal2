@@ -16,7 +16,6 @@ import { AppPreBootstrap } from './AppPreBootstrap';
 import { RouterModule, Routes } from '@angular/router';
 import { SigninOidcComponent } from '@shared/oidc/signin-oidc/signin-oidc.component';
 import { RedirectSilentRenewComponent } from '@shared/oidc/redirect-silent-renew/redirect-silent-renew.component';
-import { AuthorizationHeaderInterceptor } from '@shared/oidc/authorization-header-interceptor.interceptor';
 import { OpenIdConnectService } from '@shared/oidc/open-id-connect.service';
 import { RequireAuthenticatedUserRouteGuard } from '@shared/oidc/require-authenticated-user-route.guard';
 
@@ -79,7 +78,7 @@ export function appInitializerFactory(injector: Injector) {
     DelonComponentModule.forRoot(),
     RouterModule.forRoot(ROUTES),
     LayoutModule,
-    SharedModule
+    SharedModule.forRoot()
 
   ],
   providers: [

@@ -177,6 +177,7 @@ const HELPERS = [
     ]
 })
 export class SharedModule {
+  //单例模式搭建
     static forRoot(): ModuleWithProviders {
         return {
             ngModule: SharedModule,

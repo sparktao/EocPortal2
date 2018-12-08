@@ -52,29 +52,29 @@ export class ModalHelper {
             }
         }
         const subject = this.modalSrv.create(Object.assign({
-            wrapClassName: cls,
-            content: comp,
-            width: width ? width : undefined,
-            footer: false,
-            componentParams: params,
-            zIndex: ++this.zIndex,
-            maskClosable: false,
+            nzWrapClassName: cls,
+            nzContent: comp,
+            nzWidth: width ? width : undefined,
+            nzFooter: false,
+            nzComponentParams: params,
+            nzZIndex: ++this.zIndex,
+            nzMaskClosable: false,
         }, options || {}));
 
         this.queues.push(subject);
 
-
-
-        return subject.afterOpen.pipe(filter((res: any) => {
+        return subject.afterOpen.pipe(
+          filter((res: any) => {
                 let findIdx = -1;
                 if (typeof res === 'string') {
                     const resStr = res as string;
                     findIdx = ['onShow', 'onShown', 'onHide', 'onHidden', 'onCancel', 'onDestroy'].findIndex(w => resStr.startsWith(w));
                 }
                 return findIdx === -1;
-            }), tap(() => {
-                this.queues.pop();
-            }));
+            }),
+          tap(() => {
+              this.queues.pop();
+          }));
     }
 
     /**
@@ -82,7 +82,7 @@ export class ModalHelper {
      */
     static(comp: any, params?: any, size: 'sm' | 'lg' | '' | number = 'lg', options?: any): Observable<any> {
         return this.open(comp, params, size, Object.assign({
-            maskClosable: false
+            nzMaskClosable: false
         }, options));
     }
 }
