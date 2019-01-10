@@ -136,6 +136,7 @@ const PIPES = [
 
 import { ModalHelper } from './helpers/modal.helper';
 import { ServiceProxiesModule } from './service-proxies/service-proxies.module';
+import { MessageService } from './message/message.service';
 
 // import { MenuService } from './service-proxies/service/menu.service';
 // import { ColorsService } from './layout/colors.service'
@@ -161,7 +162,8 @@ const HELPERS = [
         ...PIPES
       ],
     providers: [
-        ModalHelper
+        ModalHelper,
+        MessageService
     ],
     exports: [
         CommonModule,

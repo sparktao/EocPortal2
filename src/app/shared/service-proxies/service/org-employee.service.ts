@@ -260,4 +260,14 @@ export class OrgEmployeeService extends BaseService {
       return this.httpClient.put(`${this.appUrlBase}/employee`, employee, httpOptions);
   }
 
+  delete(id:number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      })
+    };
+    return this.httpClient.delete(`${this.appUrlBase}/employee/`+ id, httpOptions);
+  }
+
 }

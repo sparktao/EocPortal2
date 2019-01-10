@@ -56,8 +56,19 @@ export class EmpListComponent extends PagedListingComponentBase<OrgEmployee> {
       });
     }
 
-    delete(entity: OrgEmployee): void {
-      throw new Error("Method not implemented.");
+    delete(employee: OrgEmployee): void {
+      this.message.confirm(
+        "Delete user '" + employee.employee_Name + "'?",
+        (result: boolean) => {
+          if (result) {
+            this.employeeService.delete(employee.employee_Id)
+              .subscribe(() => {
+                this.notify.info("Deleted Employee: " + employee.employee_Name);
+                this.refresh();
+              });
+          }
+        }
+      );
     }
 
     create(): void {
