@@ -5,6 +5,7 @@ import { ModalHelper } from '@shared/helpers/modal.helper';
 import { finalize } from 'rxjs/operators';
 import { CreateEmpComponent } from '../create-emp/create-emp.component';
 import { PaginationParameters, PageMeta } from '@shared/component-base/paged-listing-component-base';
+import { EditEmpComponent } from '../edit-emp/edit-emp.component';
 
 @Component({
   selector: 'app-emp-list',
@@ -60,11 +61,12 @@ export class EmpListComponent extends PagedListingComponentBase<OrgEmployee> {
     }
 
     create(): void {
-      this.modalHelper.open(CreateEmpComponent).subscribe(res => this.refresh());
+      this.modalHelper.open(CreateEmpComponent).afterClose.subscribe(res => this.refresh());
     }
 
-    edit(user: OrgEmployee): void {
-      throw new Error("Method not implemented.");
+    edit(employee: OrgEmployee): void {
+      this.modalHelper.open(EditEmpComponent, {id: employee.employee_Id})
+          .afterClose.subscribe(res => this.refresh());
     }
 
 }

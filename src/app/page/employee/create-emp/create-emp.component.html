@@ -1,11 +1,11 @@
 <form nz-form [formGroup]="validateForm" (ngSubmit)="save($event)">
 
   <div class="modal-header">
-      <div class="modal-title">{{l('CreateNewUser')}}</div>
+      <div class="modal-title">{{l('CreateNewEmployee')}}</div>
   </div>
 
   <nz-tabset>
-      <nz-tab nzTitle="用户信息">
+      <nz-tab nzTitle="雇员信息">
           <fieldset>
               <nz-form-item nz-row>
                   <nz-form-label for="employeename" nz-col [nzSpan]="4" nzRequired>{{("employee_Name")}}</nz-form-label>
@@ -31,7 +31,7 @@
 
                   <nz-form-label [nzSpan]="4" nzFor="gender" nzRequired>Gender</nz-form-label>
                   <nz-form-control [nzSpan]="8">
-                    <nz-select id="gender" formControlName="gender" nzPlaceHolder="Select a option and change input text above" (ngModelChange)="genderChange($event)">
+                    <nz-select id="gender" formControlName="gender" [(ngModel)]="employee.gender" nzPlaceHolder="Select a option and change input text above">
                       <nz-option nzValue="1" nzLabel="男士"></nz-option>
                       <nz-option nzValue="0" nzLabel="女士"></nz-option>
                     </nz-select>

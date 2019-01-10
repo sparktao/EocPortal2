@@ -25,7 +25,8 @@ import { EditEmpComponent } from './edit-emp/edit-emp.component';
     EditEmpComponent
   ],
   entryComponents: [
-    CreateEmpComponent
+    CreateEmpComponent,
+    EditEmpComponent
   ],
   providers:[
         {

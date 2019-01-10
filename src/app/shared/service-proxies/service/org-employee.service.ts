@@ -10,7 +10,7 @@ export class CreateOrgEmployeeDTO {
    /// 性别
   gender:string;
   /// 出生日期
-  birthday:moment.Moment;
+  birthday:Date;
   /// 联系电话
   contact_Phone:string;
   /// 电子邮件
@@ -27,7 +27,7 @@ export class OrgEmployee{
   /// 性别
   gender:string;
   /// 出生日期
-  birthday:moment.Moment;
+  birthday:Date;
   /// 证件类型
   certificate_Type:string;
   /// 证件代码
@@ -61,8 +61,8 @@ export class OrgEmployee{
   /// 有效标志
   isvalid:number;
   /// 创建时间
-  created_Date: moment.Moment;
-  modified_Date: moment.Moment;
+  created_Date: Date;
+  modified_Date: Date;
   headIcon:string;
 
   init(data?: any) {
@@ -70,7 +70,7 @@ export class OrgEmployee{
         this.employee_Id = data["employee_Id"];
         this.employee_Name = data["employee_Name"];
         this.gender = data["gender"];
-        this.birthday = data["birthday"] ? moment(data["birthday"].toString()) : <any>undefined;
+        this.birthday = data["birthday"] ? new Date(data["birthday"].toString()) : <any>undefined;
         this.certificate_Type = data["certificate_Type"];
         this.certificate_Code = data["certificate_Code"];
         this.contact_Phone = data["contact_Phone"];
@@ -87,8 +87,8 @@ export class OrgEmployee{
         this.note = data["note"];
         this.secretary_Phone = data["secretary_Phone"];
         this.isvalid = data["isvalid"];
-        this.created_Date = data["created_Date"] ? moment(data["created_Date"].toString()) : <any>undefined;
-        this.modified_Date = data["modified_Date"] ? moment(data["modified_Date"].toString()) : <any>undefined;
+        this.created_Date = data["created_Date"] ? new Date(data["created_Date"].toString()) : <any>undefined;
+        this.modified_Date = data["modified_Date"] ? new Date(data["modified_Date"].toString()) : <any>undefined;
         this.headIcon = data["headIcon"];
     }
 }
@@ -211,6 +211,25 @@ export class OrgEmployeeService extends BaseService {
     });
   }
 
+  get(id: number) {
+    let url_ = `${this.appUrlBase}/employee/`;
+    if (id === undefined || id === null)
+        throw new Error("The parameter 'id' must be defined and cannot be null.");
+    else
+        url_ += encodeURIComponent("" + id) + "&";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_ : any = {
+        method: "get",
+        headers: new Headers({
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        })
+    };
+
+    return this.httpClient.get(url_, options_);
+}
+
   /**
      * @input (optional)
      * @return Success
@@ -224,6 +243,21 @@ export class OrgEmployeeService extends BaseService {
       };
 
       return this.httpClient.post(`${this.appUrlBase}/employee`, employee, httpOptions);
+  }
+
+  /**
+     * @input (optional)
+     * @return Success
+     */
+    update(employee:OrgEmployee) {
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        })
+      };
+
+      return this.httpClient.put(`${this.appUrlBase}/employee`, employee, httpOptions);
   }
 
 }
