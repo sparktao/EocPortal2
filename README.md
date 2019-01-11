@@ -8,6 +8,8 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 
 
 ![alt text](https://github.com/sparktao/EocPortal2/blob/master/img-folder/employee-list.png)
+
+![alt text](https://github.com/sparktao/EocPortal2/blob/master/img-folder/createEmployee.png)
       
 
 ## Code scaffolding
